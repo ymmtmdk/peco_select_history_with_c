@@ -19,6 +19,14 @@ int file_size(FILE* fp){
   return size;
 }
 
+void date_str(char* date, size_t size, char* when){
+  time_t utime;
+  when[UTIME_LEN] = 0;
+  sscanf(when, "%ld", &utime);
+  when[UTIME_LEN] = '\n';
+  strftime(date, size, DATE_FORMAT, localtime(&utime));
+}
+
 int main(int argc, const char** argv)
 {
   if (argc != 2){
@@ -52,12 +60,8 @@ int main(int argc, const char** argv)
     when[0] = 0;
     when += LF_WHEN_MARK_LEN;
 
-    long utime;
-    when[UTIME_LEN] = 0;
-    sscanf(when, "%ld", &utime);
-    when[UTIME_LEN] = '\n';
     char date[DATE_LEN+1];
-    strftime(date, sizeof(date), DATE_FORMAT, localtime(&utime));
+    date_str(date, sizeof(date), when);
 
     cmd -= DATE_LEN;
     strncpy(cmd, date, DATE_LEN);
