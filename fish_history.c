@@ -45,7 +45,7 @@ void unescape(char* str){
 int main(int argc, const char** argv)
 {
   if (argc != 2){
-    fputs("illega argc", stderr);
+    fputs("illegal argc", stderr);
     return 1;
   }
 
@@ -102,6 +102,7 @@ int main(int argc, const char** argv)
   }
 
   free(history);
+  free(lines);
 
   return 0;
 }
