@@ -59,9 +59,10 @@ int main(int argc, const char** argv)
   char** lines = (char**)malloc(sizeof(char*)*lines_buf_size);
   int line_index = 0;
   int size = file_size(fp);
-  char* history = (char*)malloc(size+DATE_LEN-LF_CMD_MARK_LEN+1);
+  char* history = (char*)malloc(size+DATE_LEN-LF_CMD_MARK_LEN+2);
   char* hist_ptr = history+DATE_LEN-LF_CMD_MARK_LEN+1;
   fread(hist_ptr, 1, size, fp);
+  hist_ptr[size] = 0;
   hist_ptr--;
   *hist_ptr = '\n';
 
