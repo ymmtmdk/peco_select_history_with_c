@@ -27,6 +27,21 @@ void date_str(char* date, size_t size, char* when){
   strftime(date, size, DATE_FORMAT, localtime(&utime));
 }
 
+void unescape(char* str){
+  char *cp = str;
+  while (*cp){
+    if (cp[0] == '\\'){
+      if (cp[1] == 'n'){
+        cp[1] = '\n';
+      }
+      cp++;
+    }
+
+    *str++ = *cp++;
+  }
+  *str = 0;
+}
+
 int main(int argc, const char** argv)
 {
   if (argc != 2){
@@ -61,8 +76,16 @@ int main(int argc, const char** argv)
     when += LF_WHEN_MARK_LEN;
 
     char date[DATE_LEN+1];
-    date_str(date, sizeof(date), when);
+    if (when[1] == '\n'){
+      time_t utime = 0;
+      strftime(date, sizeof(date), DATE_FORMAT, localtime(&utime));
+      when += 1;
+    }else{
+      date_str(date, sizeof(date), when);
+      when += UTIME_LEN;
+    }
 
+    unescape(cmd);
     cmd -= DATE_LEN;
     strncpy(cmd, date, DATE_LEN);
     if (line_index >= lines_buf_size){
@@ -71,10 +94,10 @@ int main(int argc, const char** argv)
     }
 
     lines[line_index++] = cmd;
-    hist_ptr = when+UTIME_LEN;
+    hist_ptr = when;
   }
 
-  for (; line_index >= 0; line_index--){
+  for (line_index -= 1; line_index >= 0; line_index--){
     puts(lines[line_index]);
   }
 
